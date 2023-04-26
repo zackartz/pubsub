@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple PubSub</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <div class="bg-gray-100 w-screen h-screen p-8">
+    <h1 class="font-bold text-4xl pb-4">Simple PubSub!</h1>
+    <input
+      id="input"
+      class="px-4 py-2 rounded-md bg-gray-200 focus:to-blue-400 w-full"
+      type="text"
+      placeholder="your message"
+      value="Hello World!"
+    />
+    <button
+      id="btn"
+      class="w-full px-4 bg-blue-500 shadow-lg shadow-blue-200 py-2 rounded-md mt-4 text-white"
+      type="button"
+    >
+      Send Websocket
+    </button>
+    <div id="messages" class="bg-gray-200 p-4 mt-4 rounded-lg">
+      <p class="p-4 rounded-md bg-gray-50 shadow-sm">Example Message</p>
+    </div>
+  </div>
+
+  <script>
+    // create socket on default addr
+    const socket = new WebSocket("ws://localhost:8080/ws");
+
+    const sendButton = document.querySelector("#btn");
+    const input = document.querySelector("#input");
+
+    sendButton.addEventListener("click", () => {
+      socket.send(input.value);
+    });
+
+    const messagesDiv = document.querySelector("#messages");
+
+    socket.addEventListener("message", (event) => {
+      messagesDiv.innerHTML += `<p class="p-4 rounded-md bg-gray-50 mt-4 shadow-sm">${event.data}</p>`;
+      console.log("Message from server ", event.data);
+    });
+  </script>
+</html>
