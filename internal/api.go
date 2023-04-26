@@ -26,13 +26,11 @@ type Room struct {
 // addClient method adds a client to the room
 func (r *Room) addClient(c *websocket.Conn) {
 	r.clients[c] = true
-	log.Printf("client added: %s\n", c.RemoteAddr())
 }
 
 // removeClient method removes a client from the room
 func (r *Room) removeClient(c *websocket.Conn) {
 	delete(r.clients, c)
-	log.Printf("client removed: %s\n", c.RemoteAddr())
 }
 
 // ServeHTTP method implements the http.Handler interface to serve websocket connections
@@ -69,7 +67,6 @@ func (rm *Room) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			go func() {
 				rm.m.Lock()
 				defer rm.m.Unlock()
-				log.Println("len clients map:", len(rm.clients))
 				// write message to client, remove client if error
 				err = socket.WriteMessage(websocket.TextMessage, m)
 				if err != nil {
